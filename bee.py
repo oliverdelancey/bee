@@ -17,21 +17,44 @@ def get_keywords(file_name):
     return keywords
 
 
-def get_synonyms(word):
-    """get a list of synonyms of the word"""
-    synonyms = []
-    for ss in wn.synsets(word):
-        for lm in ss.lemmas():
-            synonyms.append(lm.name())
-    # print(f"{word}: {synonyms}")
-    return synonyms
+def get_related(word):
+    """get words related to this word"""
+    mass_list = []
+    print(f"original: {word}")
+    definitions = wn.synsets(word)
+    original_set = definitions[0]
+    for ss in definitions:
+        if (original_set.wup_similarity(ss)) == None:
+            continue
+        elif (original_set.wup_similarity(ss)) <= 0.5:
+            continue
+        print(f"definition: {ss.name()}")
+        # synonyms
+        print("    synonyms:")
+        for syn in ss.lemma_names():
+            print(f"        {syn}")
+            mass_list.append(syn)
+        # hyponyms
+        for hypo in ss.hyponyms():
+            hypo_syn = hypo.lemma_names()
+            mass_list += hypo_syn
+            print(f"    hyponym: {hypo_syn[0]} --synonyms:")
+            for syn_syn in hypo_syn:
+                print(f"        {syn_syn}")
+        for hyper in ss.hypernyms():
+            hyper_syn = hyper.lemma_names()
+            mass_list += hyper_syn
+            print(f"    hypernym: {hyper_syn[0]} --synonyms:")
+            for syn_syn in hyper_syn:
+                print(f"        {syn_syn}")
+    return mass_list
 
 
 def generate_pool(keywords):
     """generate a 'pool' of keywords"""
     pool = []
     for i in keywords:
-        pool.append(get_synonyms(i)) # just put the contents of get_syn here and del the func
+        pool.append(get_related(i))
     return pool
 
 
@@ -76,7 +99,7 @@ if __name__ == "__main__":
 
     keywords = get_keywords(args.file)
     pool = generate_pool(keywords)
-    
+
     i = 0
     name = ""
     name_prev = " "

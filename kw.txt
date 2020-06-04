@@ -1,10 +1,3 @@
 python
-rust
-text
-console
-terminal
-crab
-crustacean
-grid
-sheet
-spreadsheet
+name
+generator

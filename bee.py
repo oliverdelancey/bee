@@ -100,7 +100,7 @@ if __name__ == "__main__":
         sys.stderr.flush()
         sys.exit(1)
 
-    logging.basicConfig(filename="bee.log", filemode="w", format="%(name)s - %(levelname)s - %(message)")
+    logging.basicConfig(filename="bee.log", filemode="w", level=logging.INFO)
 
     keywords = get_keywords(args.file)
     pool = generate_pool(keywords)

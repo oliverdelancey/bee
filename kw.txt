@@ -1,4 +1,10 @@
-furry
-soft
-brown
-cute
+python
+rust
+text
+console
+terminal
+crab
+crustacean
+grid
+sheet
+spreadsheet

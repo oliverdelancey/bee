@@ -2,6 +2,7 @@
 """bee v0.0.1"""
 
 import argparse
+import logging
 import random
 import sys
 
@@ -20,7 +21,7 @@ def get_keywords(file_name):
 def get_related(word):
     """get words related to this word"""
     mass_list = []
-    print(f"original: {word}")
+    logging.info(f"original: {word}")
     definitions = wn.synsets(word)
     original_set = definitions[0]
     for ss in definitions:
@@ -28,25 +29,25 @@ def get_related(word):
             continue
         elif (original_set.wup_similarity(ss)) <= 0.5:
             continue
-        print(f"definition: {ss.name()}")
+        logging.info(f"definition: {ss.name()}")
         # synonyms
-        print("    synonyms:")
+        logging.info("    synonyms:")
         for syn in ss.lemma_names():
-            print(f"        {syn}")
+            logging.info(f"        {syn}")
             mass_list.append(syn)
         # hyponyms
         for hypo in ss.hyponyms():
             hypo_syn = hypo.lemma_names()
             mass_list += hypo_syn
-            print(f"    hyponym: {hypo_syn[0]} --synonyms:")
+            logging.info(f"    hyponym: {hypo_syn[0]} --synonyms:")
             for syn_syn in hypo_syn:
-                print(f"        {syn_syn}")
+                logging.info(f"        {syn_syn}")
         for hyper in ss.hypernyms():
             hyper_syn = hyper.lemma_names()
             mass_list += hyper_syn
-            print(f"    hypernym: {hyper_syn[0]} --synonyms:")
+            logging.info(f"    hypernym: {hyper_syn[0]} --synonyms:")
             for syn_syn in hyper_syn:
-                print(f"        {syn_syn}")
+                logging.info(f"        {syn_syn}")
     return mass_list
 
 
@@ -65,6 +66,8 @@ def generate_name(pool):
         topic_2 = random.choice(pool)
         if topic_2 != topic_1:
             break
+        else:
+            logging.error(f"duplicate topic {topic_2}")
     word_1 = random.choice(topic_1)
     word_2 = random.choice(topic_2)
     delimiters = ["", "-", "_", "single_cap", "double_cap"]
@@ -96,6 +99,8 @@ if __name__ == "__main__":
         sys.stderr.write("    Error: N is not >= 0.\n    Aborting program.")
         sys.stderr.flush()
         sys.exit(1)
+
+    logging.basicConfig(filename="bee.log", filemode="w", format="%(name)s - %(levelname)s - %(message)")
 
     keywords = get_keywords(args.file)
     pool = generate_pool(keywords)

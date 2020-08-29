@@ -23,7 +23,11 @@ def get_related(word):
     mass_list = []
     logging.info(f"original: {word}")
     definitions = wn.synsets(word)
-    original_set = definitions[0]
+    try:
+        original_set = definitions[0]
+    except:
+        print(f"Error: '{word}' is not in nltk.")
+        sys.exit(1)
     for ss in definitions:
         if (original_set.wup_similarity(ss)) == None:
             continue
